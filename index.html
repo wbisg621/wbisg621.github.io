@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Startup</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-base-100 text-base-content">
+
+<!-- HEADER -->
+<header class="top-0 bg-base-100 z-50">
+
+  <!-- TOP ROW -->
+  <div class="grid grid-cols-6 items-center px-4 py-4 max-w-5xl mx-auto">
+
+    <div>
+      <button id="menu-btn" class="lg:hidden text-2xl">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg>
+      </button>
+    </div>
+
+    <div class="col-span-4 col-start-2 text-center py-4">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-none">
+        well<span class="text-indigo-600">being</span> initiative singapore
+      </h1>
+    </div>
+
+    <div></div>
+
+  </div>
+
+  <!-- DESKTOP NAV (row below title) -->
+  <div class="hidden lg:block">
+    <div class="max-w-5xl mx-auto px-4 py-3">
+      <ul class="flex justify-center gap-8">
+        <li><a href="#about" class="hover:underline">About</a></li>
+        <li><a href="#mission" class="hover:underline">Mission</a></li>
+        <li><a href="#whatwedo" class="hover:underline">What We Do</a></li>
+        <li><a href="#contact" class="hover:underline">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU (collapsible) -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t px-4 py-4">
+    <div class="flex flex-col gap-4">
+      <a href="#about" class="hover:underline">About</a>
+      <a href="#mission" class="hover:underline">Mission</a>
+      <a href="#whatwedo" class="hover:underline">What We Do</a>
+      <a href="#contact" class="hover:underline">Contact</a>
+    </div>
+  </div>
+
+</header>
+
+<!-- HERO -->
+<section class="py-10 md:py-14 bg-indigo-100">
+  <div class="max-w-3xl mx-auto text-center px-4">
+    <h2 class="text-2xl md:text-3xl font-medium">
+      We’re an organisation improving well-being with an emphasis on women’s health.
+    </h2>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-16">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-4 text-gray-900">About Us</h2>
+    <div class="space-y-4">
+      <p>
+        Wellbeing Initiative Singapore is an organisation dedicated to improving overall well-being through research, community programs, and outreach. Our work focuses on mental and physical health, with a particular emphasis on women’s health.
+      </p>
+      <p>
+        Through research, we aim to better understand real needs and challenges in these areas. We then turn those insights into practical, evidence-based community programs and share them through accessible outreach. Our goal is to bridge the gap between research and everyday life so more people can access the support and knowledge they need to live healthier, more informed lives.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION & VISION -->
+<section id="mission" class="py-16 ">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-8 text-gray-900">Mission & Vision</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <div class="card bg-gray-50 shadow">
+        <div class="card-body">
+          <h3 class="card-title text-gray-900">Mission</h3>
+          <p>Our mission is to improve well-being through research on mental and physical health, with a focus on women’s health, and to turn those insights into practical community programs and accessible outreach.</p>
+        </div>
+      </div>
+
+      <div class="card bg-gray-50 shadow">
+        <div class="card-body">
+          <h3 class="card-title text-gray-900">Vision</h3>
+          <p>We envision a world where everyone has the knowledge and support they need to take care of their mental and physical health, and where research meaningfully improves everyday life.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section id="whatwedo" class="py-16">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-8 text-gray-900">What We Do</h2>
+    <p>
+      We’re an organisation focused on doing meaningful work through research, community programs, and outreach. We look at issues of well-being, work directly with communities, and share what we learn in simple, practical ways that people can actually use.
+    </p>
+    <div class="grid md:grid-cols-3 gap-6 py-6">
+
+      <div class="card bg-gray-50 shadow">
+        <div class="card-body">
+          <h3 class="card-title text-gray-900">Research</h3>
+          <p>Our research focuses on a range of topics related to general well-being, including mental health and physical health, with a particular focus on women’s health.</p>
+        </div>
+      </div>
+
+      <div class="card bg-gray-50 shadow">
+        <div class="card-body">
+          <h3 class="card-title text-gray-900">Community Programs</h3>
+          <p>Based on our research, we develop evidence-based programs that support positive mental and physical health practices within the community.</p>
+        </div>
+      </div>
+
+      <div class="card bg-gray-50 shadow">
+        <div class="card-body">
+          <h3 class="card-title text-gray-900">Outreach</h3>
+          <p>Through talks, workshops, and content creation, we aim to spread awareness, spark conversations, and help more people build better physical and mental well-being.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-16 px-6">
+  <div class="max-w-md mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-4 text-gray-900">Contact</h2>
+    <p class="mb-4">Reach out to us anytime.</p>
+    <p class="btn btn-outline">
+        &#104;&#101;&#108;&#108;&#111;&#64;&#121;&#111;&#117;&#114;&#115;&#116;&#97;&#114;&#116;&#117;&#112;&#46;&#99;&#111;&#109;
+      </p>
+  </div>
+</section>
+
+<script src="index.js"></script>
+
+<!-- FOOTER -->
+<footer class="footer footer-center p-6 bg-base-100 text-base-content">
+  <p>© 2026 wellbeing initiative singapore. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
