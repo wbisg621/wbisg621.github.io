@@ -8,3 +8,24 @@ html, body {
 h1, h2, h3 {
     font-family: "Bricolage Grotesque", system-ui, sans-serif;
 }
+
+@keyframes softPulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.4);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+}
+
+.animate-soft-pulse {
+    animation: softPulse 3s ease-in-out infinite;
+}
