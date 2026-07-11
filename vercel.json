@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/create-payment-intent.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
