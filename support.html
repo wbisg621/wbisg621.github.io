@@ -3,6 +3,727 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support Wellbeing Initiative Singapore</title>
+  <meta name="description" content="Support Wellbeing Initiative Singapore LLP with a secure SGD contribution." />
+  <meta name="payment-api-base" content="" />
+  <script src="https://static.airwallex.com/components/sdk/v1/index.js"></script>
+  <style>
+    :root {
+      --ink: #17211f;
+      --muted: #5d6b66;
+      --line: #d9e2dd;
+      --soft: #f4f7f4;
+      --paper: #fffdf8;
+      --green: #0f6b4f;
+      --green-2: #d9f2e5;
+      --blue: #255f9e;
+      --gold: #b97818;
+      --rose: #b85c5c;
+      --shadow: 0 18px 45px rgba(23, 33, 31, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        linear-gradient(90deg, rgba(15,107,79,0.08) 1px, transparent 1px),
+        linear-gradient(180deg, #fffdf8 0%, #f6f0e5 100%);
+      background-size: 34px 34px, auto;
+    }
+
+    button, input, select { font: inherit; }
+    a { color: inherit; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      font-family: Arial, sans-serif;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .back {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.72);
+      border-radius: 8px;
+      padding: 10px 13px;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .intro {
+      padding: 30px 0 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(2.35rem, 5vw, 4.7rem);
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .lede {
+      margin: 18px 0 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.75;
+    }
+
+    .method-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+      font-family: Arial, sans-serif;
+    }
+
+    .method-chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.72);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .method-chip.pending {
+      color: #7a3c14;
+      background: #ffe8d3;
+      border-color: #f8c69d;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,253,248,0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .checkout {
+      padding: 22px;
+    }
+
+    .section {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 8px;
+      padding: 7px 9px;
+      background: var(--green-2);
+      color: var(--green);
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .product {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--soft);
+      margin-bottom: 16px;
+    }
+
+    .product strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .product p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .amount-chip {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px 8px;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-weight: 800;
+    }
+
+    .amount-chip.active {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+    }
+
+    .field span {
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 13px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(15, 107, 79, 0.14);
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #eef7f0;
+      border: 1px solid #cce4d1;
+      font-family: Arial, sans-serif;
+    }
+
+    .summary span {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .summary strong {
+      color: var(--green);
+      font-size: 1.22rem;
+    }
+
+    .pay-button {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(15, 107, 79, 0.2);
+    }
+
+    .pay-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .message {
+      min-height: 22px;
+      margin: 12px 0 0;
+      color: var(--rose);
+      font-family: Arial, sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .support-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .support-item {
+      border-left: 4px solid var(--green);
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.72);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .support-item strong { display: block; margin-bottom: 4px; }
+    .muted { color: var(--muted); line-height: 1.7; }
+
+    .payment-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      font-family: Arial, sans-serif;
+    }
+
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px 13px;
+    }
+
+    .payment-row.pending {
+      background: #fff8f1;
+      border-color: #f2d4b8;
+    }
+
+    .status {
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pending .status { color: #8b4314; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .step {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.74);
+    }
+
+    .step strong { display: block; margin-bottom: 7px; }
+
+    .contact {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .details {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+      font-family: Arial, sans-serif;
+    }
+
+    .details div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 13px;
+    }
+
+    .details span {
+      display: block;
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .policy {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 13px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-weight: 800;
+    }
+
+    details p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .fineprint {
+      margin-top: 22px;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .grid, .contact {
+        grid-template-columns: 1fr;
+      }
+      h1 { max-width: none; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 20px, 1120px); padding-top: 18px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .checkout, .section { padding: 18px; }
+      .amount-grid, .steps { grid-template-columns: 1fr 1fr; }
+      .payment-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div class="brand">Wellbeing Initiative Singapore</div>
+      <a class="back" href="/index.html">Back to home</a>
+    </div>
+
+    <section class="hero">
+      <article class="intro">
+        <p class="eyebrow">Secure contribution</p>
+        <h1>Support wellbeing work in Singapore</h1>
+        <p class="lede">
+          Your contribution helps Wellbeing Initiative Singapore LLP continue community outreach,
+          practical programs, and research-informed wellbeing work with an emphasis on women's health.
+        </p>
+        <div class="method-strip" aria-label="Payment methods">
+          <span class="method-chip">Visa</span>
+          <span class="method-chip">Mastercard</span>
+          <span class="method-chip">Apple Pay</span>
+          <span class="method-chip">Google Pay</span>
+          <span class="method-chip">PayNow</span>
+          <span class="method-chip">Bank Transfer</span>
+          <span class="method-chip pending">PayPal pending</span>
+          <span class="method-chip pending">Skrill pending</span>
+        </div>
+      </article>
+
+      <form class="panel checkout" id="checkoutForm">
+        <div class="section-title">
+          <h2>Contribution checkout</h2>
+          <span class="tag">SGD</span>
+        </div>
+
+        <div class="product">
+          <strong>Support contribution to Wellbeing Initiative Singapore LLP</strong>
+          <p>Flexible contribution for research, outreach, community programs, and operating support.</p>
+        </div>
+
+        <div class="amount-grid" id="amountGrid">
+          <button class="amount-chip" type="button" data-amount="10">S$10</button>
+          <button class="amount-chip active" type="button" data-amount="25">S$25</button>
+          <button class="amount-chip" type="button" data-amount="50">S$50</button>
+          <button class="amount-chip" type="button" data-amount="100">S$100</button>
+        </div>
+
+        <label class="field">
+          <span>Custom amount</span>
+          <input id="customAmount" name="amount" type="number" min="1" step="1" value="25" required />
+        </label>
+
+        <label class="field">
+          <span>Your name</span>
+          <input id="supporterName" name="name" type="text" placeholder="Optional" autocomplete="name" />
+        </label>
+
+        <label class="field">
+          <span>Email address</span>
+          <input id="supporterEmail" name="email" type="email" placeholder="For receipt or follow-up" autocomplete="email" />
+        </label>
+
+        <div class="summary">
+          <span>Total contribution</span>
+          <strong id="amountDisplay">SGD 25.00</strong>
+        </div>
+
+        <button class="pay-button" id="checkoutButton" type="submit">Continue to secure payment</button>
+        <p class="message" id="checkoutMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="grid">
+      <article class="panel section">
+        <div class="section-title">
+          <h2>What your support helps</h2>
+          <span class="tag">Initiative</span>
+        </div>
+        <p class="muted">Contributions are not purchases of physical goods. They support the initiative's ongoing work.</p>
+        <div class="support-list">
+          <div class="support-item">
+            <strong>Community outreach</strong>
+            <span class="muted">Sharing accessible wellbeing information and reaching more people.</span>
+          </div>
+          <div class="support-item">
+            <strong>Practical programs</strong>
+            <span class="muted">Developing useful programs that respond to real community needs.</span>
+          </div>
+          <div class="support-item">
+            <strong>Research-informed work</strong>
+            <span class="muted">Turning research and learning into practical community support.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel section">
+        <div class="section-title">
+          <h2>Payment methods</h2>
+          <span class="tag">Airwallex</span>
+        </div>
+        <p class="muted">Activated methods are offered through secure Airwallex checkout when available for the selected device and browser.</p>
+        <div class="payment-list">
+          <div class="payment-row"><strong>Visa and Mastercard</strong><span class="status">Activated</span></div>
+          <div class="payment-row"><strong>Apple Pay</strong><span class="status">Activated</span></div>
+          <div class="payment-row"><strong>Google Pay</strong><span class="status">Activated</span></div>
+          <div class="payment-row"><strong>PayNow</strong><span class="status">Activated</span></div>
+          <div class="payment-row"><strong>Bank Transfer</strong><span class="status">Activated</span></div>
+          <div class="payment-row pending"><strong>PayPal</strong><span class="status">Pending review</span></div>
+          <div class="payment-row pending"><strong>Skrill</strong><span class="status">Pending review</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="steps">
+      <div class="step">
+        <strong>1. Choose an amount</strong>
+        <span class="muted">Select a preset amount or enter your own SGD contribution.</span>
+      </div>
+      <div class="step">
+        <strong>2. Continue securely</strong>
+        <span class="muted">Airwallex opens a secure hosted checkout for available activated methods.</span>
+      </div>
+      <div class="step">
+        <strong>3. Complete payment</strong>
+        <span class="muted">Return to this site after the payment attempt is completed or cancelled.</span>
+      </div>
+    </section>
+
+    <section class="contact">
+      <article class="panel section">
+        <div class="section-title">
+          <h2>Contact & registration</h2>
+          <span class="tag">Singapore</span>
+        </div>
+        <div class="details">
+          <div><span>Legal entity name</span><strong>WELLBEING INITIATIVE SINGAPORE LLP</strong></div>
+          <div><span>UEN</span><strong>T24LL1371F</strong></div>
+          <div><span>Email</span><strong>wellbeinginitiative2026@gmail.com</strong></div>
+          <div><span>Phone</span><strong>9115 4409</strong></div>
+          <div><span>Business registration address</span><strong>353 Tampines Street 33, #05-510, Singapore 520353</strong></div>
+        </div>
+      </article>
+
+      <article class="panel section">
+        <div class="section-title">
+          <h2>Policies</h2>
+          <span class="tag">Review ready</span>
+        </div>
+        <div class="policy">
+          <details open>
+            <summary>Terms & Conditions</summary>
+            <p>Support contributions are voluntary payments to WELLBEING INITIATIVE SINGAPORE LLP. Contributions support research-informed wellbeing work, outreach, community programs, and operating needs. Payments are processed in Singapore dollars through Airwallex.</p>
+          </details>
+          <details>
+            <summary>Shipping & Refund Policy</summary>
+            <p>No physical products are sold or shipped through this page. Support contributions do not require delivery. Receipts or confirmations may be sent by email where contact details are provided. Refund requests are reviewed case by case; contact wellbeinginitiative2026@gmail.com with the payment date, amount, and payer details.</p>
+          </details>
+          <details>
+            <summary>Privacy Policy</summary>
+            <p>Supporter information is used for payment processing, receipts, follow-up, record keeping, and legal or accounting obligations. We do not sell personal data. You may contact us to request access, correction, or deletion of your information where applicable.</p>
+          </details>
+          <details>
+            <summary>Governing Law</summary>
+            <p>These terms are governed by the laws of Singapore.</p>
+          </details>
+        </div>
+      </article>
+    </section>
+
+    <p class="fineprint">
+      PayPal and Skrill are displayed as pending because Airwallex currently requires additional website review updates before those methods can be activated.
+    </p>
+  </main>
+
+  <script>
+    const amountGrid = document.getElementById('amountGrid');
+    const customAmount = document.getElementById('customAmount');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const checkoutButton = document.getElementById('checkoutButton');
+    const checkoutMessage = document.getElementById('checkoutMessage');
+    const supporterName = document.getElementById('supporterName');
+    const supporterEmail = document.getElementById('supporterEmail');
+    const apiBase = document.querySelector('meta[name="payment-api-base"]').content.replace(/\/$/, '');
+
+    function parseAmount(value) {
+      const amount = Number(value);
+      return Number.isFinite(amount) ? Math.max(0, amount) : 0;
+    }
+
+    function formatAmount(value) {
+      return `SGD ${parseAmount(value).toFixed(2)}`;
+    }
+
+    function updateAmount(value) {
+      const amount = parseAmount(value);
+      amountDisplay.textContent = formatAmount(amount);
+      amountGrid.querySelectorAll('.amount-chip').forEach((chip) => {
+        chip.classList.toggle('active', Number(chip.dataset.amount) === amount);
+      });
+    }
+
+    function setLoading(isLoading) {
+      checkoutButton.disabled = isLoading;
+      checkoutButton.textContent = isLoading ? 'Opening secure checkout...' : 'Continue to secure payment';
+    }
+
+    amountGrid.addEventListener('click', (event) => {
+      const chip = event.target.closest('.amount-chip');
+      if (!chip) return;
+      customAmount.value = chip.dataset.amount;
+      checkoutMessage.textContent = '';
+      updateAmount(chip.dataset.amount);
+    });
+
+    customAmount.addEventListener('input', () => {
+      checkoutMessage.textContent = '';
+      updateAmount(customAmount.value);
+    });
+
+    checkoutForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const amount = parseAmount(customAmount.value);
+
+      if (amount < 1) {
+        checkoutMessage.textContent = 'Please enter an amount of at least SGD 1.00.';
+        customAmount.focus();
+        return;
+      }
+
+      setLoading(true);
+      checkoutMessage.textContent = '';
+
+      try {
+        const response = await fetch(`${apiBase}/api/create-payment-intent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount,
+            name: supporterName.value.trim(),
+            email: supporterEmail.value.trim(),
+            purpose: 'Support contribution to Wellbeing Initiative Singapore LLP'
+          })
+        });
+
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.message || 'Unable to start checkout.');
+        }
+
+        const { payments } = await window.AirwallexComponentsSDK.init({
+          env: payload.env || 'prod',
+          enabledElements: ['payments']
+        });
+
+        payments.redirectToCheckout({
+          env: payload.env || 'prod',
+          mode: 'payment',
+          currency: payload.currency,
+          intent_id: payload.intent_id,
+          client_secret: payload.client_secret,
+          successUrl: payload.success_url,
+          cancelUrl: payload.cancel_url,
+          appearance: {
+            mode: 'light',
+            variables: { colorBrand: '#0f6b4f' }
+          }
+        });
+      } catch (error) {
+        checkoutMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        setLoading(false);
+      }
+    });
+
+    updateAmount(customAmount.value);
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Support This Initiative</title>
   <meta name="description" content="Donate to Wellbeing Initiative Singapore via PayNow with Airwallex." />
   <style>
