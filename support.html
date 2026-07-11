@@ -420,7 +420,7 @@
 
     <section class="hero">
       <article class="panel hero-copy">
-        <p class="eyebrow">Airwallex PayNow support page</p>
+        <p class="eyebrow">Support this initiative</p>
         <h1>Help this initiative with a flexible donation amount</h1>
         <p class="lede">
           This Singapore-based page is designed for an initiative, not a shop. Supporters can choose any amount,
@@ -429,7 +429,7 @@
         <div class="badges">
           <div class="badge"><span class="dot"></span> Flexible donation flow</div>
           <div class="badge">SGD only</div>
-          <div class="badge">No external redirect</div>
+          <div class="badge">PayNow QR</div>
         </div>
       </article>
 
@@ -508,7 +508,7 @@
           </svg>
         </div>
         <p class="muted" id="qrHelp">
-          This is a placeholder. When connected to Airwallex, the backend should replace this with the real QR payload.
+          Your PayNow QR will appear here after you choose a donation amount.
         </p>
       </article>
     </section>
@@ -516,19 +516,19 @@
     <section class="steps">
       <article class="step panel">
         <strong>1. Choose an amount</strong>
-        <p class="muted">Tap a preset amount or enter a custom donation.</p>
+        <p class="muted">Tap a preset amount or enter your own donation.</p>
       </article>
       <article class="step panel">
-        <strong>2. Generate the QR</strong>
-        <p class="muted">Your backend sends that amount to Airwallex.</p>
+        <strong>2. Scan the QR</strong>
+        <p class="muted">Use your banking app to read the PayNow code.</p>
       </article>
       <article class="step panel">
-        <strong>3. Scan and pay</strong>
-        <p class="muted">The supporter uses a bank app to complete the donation.</p>
+        <strong>3. Complete the donation</strong>
+        <p class="muted">Confirm the amount and finish the payment in your app.</p>
       </article>
       <article class="step panel">
-        <strong>4. Show thanks</strong>
-        <p class="muted">After webhook confirmation, show a thank-you message.</p>
+        <strong>4. Receive a thank-you</strong>
+        <p class="muted">A confirmation message appears after your donation is submitted.</p>
       </article>
     </section>
 
@@ -575,11 +575,6 @@
         </div>
       </article>
     </section>
-
-    <section class="panel footer-note">
-      <strong>No external redirection</strong>
-      <p>The donation flow stays on this site. Do not send supporters to another website to complete payment.</p>
-    </section>
   </main>
 
   <script>
@@ -620,7 +615,7 @@
       const email = donorEmail.value.trim() || 'their email';
       const amount = formatAmount(customAmount.value);
       qrHelp.textContent =
-        `This page is now prepared for ${name}. In the live version, your backend would ask Airwallex for a real PayNow QR for ${amount}, then show it here and send confirmation to ${email}.`;
+        `A PayNow QR for ${amount} would appear here for ${name}. Confirmation can be sent to ${email}.`;
       generateQr.textContent = 'QR requested';
       generateQr.disabled = true;
       generateQr.style.opacity = '0.78';
