@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support This Initiative</title>
+  <meta name="description" content="Donate to Wellbeing Initiative Singapore via PayNow with Airwallex." />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0d1728;
+      --card: rgba(255, 255, 255, 0.08);
+      --card2: rgba(255, 255, 255, 0.12);
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f8fafc;
+      --muted: #b7c3d6;
+      --accent: #7dd3fc;
+      --accent2: #fbbf24;
+      --good: #34d399;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(125, 211, 252, 0.2), transparent 25%),
+        radial-gradient(circle at top right, rgba(251, 191, 36, 0.16), transparent 28%),
+        linear-gradient(180deg, #06101c 0%, #091422 40%, #060c16 100%);
+    }
+
+    .wrap {
+      width: min(1160px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 54px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      font-size: 1.15rem;
+    }
+
+    .back {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.04));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .hero-copy {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto -60px -60px auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(125,211,252,0.32), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      max-width: 12ch;
+    }
+
+    .lede {
+      margin: 16px 0 0;
+      color: var(--muted);
+      max-width: 64ch;
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .badge .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 0 6px rgba(52,211,153,0.12);
+    }
+
+    .donate-card {
+      padding: 24px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card-head h2, .section h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: -0.03em;
+    }
+
+    .pill {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    .pill.strong {
+      background: rgba(125,211,252,0.16);
+      color: #dff7ff;
+    }
+
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .amount-chip {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .amount-chip.active {
+      border-color: rgba(125,211,252,0.55);
+      background: rgba(125,211,252,0.18);
+      color: #ecfdff;
+    }
+
+    .field {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+      font-weight: 700;
+    }
+
+    .field span {
+      color: #dbe7f7;
+      font-size: 0.92rem;
+    }
+
+    .field input {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      padding: 15px 16px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(125,211,252,0.6);
+      box-shadow: 0 0 0 4px rgba(125,211,252,0.12);
+    }
+
+    .summary {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .summary span { color: var(--muted); }
+    .summary strong { font-size: 1.18rem; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 0;
+      color: #04111f;
+      background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 16px 30px rgba(125,211,252,0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .section {
+      padding: 24px;
+    }
+
+    .section p, .muted {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .box {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .box strong { display: block; margin-bottom: 6px; }
+
+    .qr {
+      min-height: 300px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 30%),
+        rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.18);
+      border-radius: 24px;
+      margin-top: 16px;
+      padding: 18px;
+    }
+
+    .qr svg { width: min(100%, 260px); height: auto; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .step {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.04));
+      box-shadow: var(--shadow);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .contact {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .details {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .details div {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .details span {
+      display: block;
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .policy {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    details {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    details p { color: var(--muted); line-height: 1.7; margin: 10px 0 0; }
+
+    .footer-note {
+      margin-top: 22px;
+      padding: 18px 20px;
+    }
+
+    .footer-note strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .footer-note p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .grid, .contact {
+        grid-template-columns: 1fr;
+      }
+      .steps {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 20px, 1160px); padding-top: 18px; }
+      .hero-copy, .donate-card, .section, .footer-note { padding: 20px; }
+      .amount-grid, .steps { grid-template-columns: 1fr 1fr; }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div class="brand">Wellbeing Initiative Singapore</div>
+      <a class="back" href="/index.html">Back to home</a>
+    </div>
+
+    <section class="hero">
+      <article class="panel hero-copy">
+        <p class="eyebrow">Airwallex PayNow support page</p>
+        <h1>Help this initiative with a flexible donation amount</h1>
+        <p class="lede">
+          This Singapore-based page is designed for an initiative, not a shop. Supporters can choose any amount,
+          then pay by scanning a PayNow QR that is generated for that one donation.
+        </p>
+        <div class="badges">
+          <div class="badge"><span class="dot"></span> Flexible donation flow</div>
+          <div class="badge">SGD only</div>
+          <div class="badge">No external redirect</div>
+        </div>
+      </article>
+
+      <article class="panel donate-card">
+        <div class="card-head">
+          <h2>Choose an amount</h2>
+          <span class="pill strong">PayNow</span>
+        </div>
+
+        <div class="amount-grid" id="amountGrid">
+          <button class="amount-chip active" type="button" data-amount="10">S$10</button>
+          <button class="amount-chip" type="button" data-amount="25">S$25</button>
+          <button class="amount-chip" type="button" data-amount="50">S$50</button>
+          <button class="amount-chip" type="button" data-amount="100">S$100</button>
+        </div>
+
+        <label class="field">
+          <span>Custom amount</span>
+          <input id="customAmount" type="number" min="1" step="1" value="25" />
+        </label>
+
+        <label class="field">
+          <span>Your name</span>
+          <input id="donorName" type="text" placeholder="Optional" value="Supporter" />
+        </label>
+
+        <label class="field">
+          <span>Email address</span>
+          <input id="donorEmail" type="email" placeholder="Optional receipt email" />
+        </label>
+
+        <div class="summary">
+          <span>Donation total</span>
+          <strong id="amountDisplay">SGD 25.00</strong>
+        </div>
+
+        <button class="button" id="generateQr" type="button">Generate PayNow QR</button>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel section">
+        <div class="card-head">
+          <h2>What your gift supports</h2>
+          <span class="pill">Initiative</span>
+        </div>
+        <p class="muted">
+          Donations help keep the initiative running and support community-focused work.
+        </p>
+        <div class="stack">
+          <div class="box">
+            <strong>Community outreach</strong>
+            <span class="muted">Share useful information and reach more people.</span>
+          </div>
+          <div class="box">
+            <strong>Practical programs</strong>
+            <span class="muted">Turn ideas into simple, helpful initiatives.</span>
+          </div>
+          <div class="box">
+            <strong>Ongoing support</strong>
+            <span class="muted">Keep the work moving with steady backing.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel section">
+        <div class="card-head">
+          <h2>Scan to donate</h2>
+          <span class="pill">Placeholder QR</span>
+        </div>
+        <div class="qr">
+          <svg viewBox="0 0 260 260" aria-hidden="true">
+            <rect width="260" height="260" rx="28" fill="#fff"/>
+            <path d="M26 26h64v64H26zM42 42h32v32H42zM170 26h64v64h-64zM186 42h32v32h-32zM26 170h64v64H26zM42 186h32v32H42z" fill="#0f172a"/>
+            <path d="M110 26h18v18h-18zM128 26h18v18h-18zM110 44h18v18h-18zM146 44h18v18h-18zM110 80h18v18h-18zM128 80h18v18h-18zM146 80h18v18h-18zM92 110h18v18H92zM110 110h18v18h-18zM128 110h18v18h-18zM146 110h18v18h-18zM164 110h18v18h-18zM92 128h18v18H92zM110 128h18v18h-18zM146 128h18v18h-18zM164 128h18v18h-18zM92 146h18v18H92zM110 146h18v18h-18zM128 146h18v18h-18zM146 146h18v18h-18zM164 146h18v18h-18zM110 182h18v18h-18zM128 182h18v18h-18zM146 182h18v18h-18z" fill="#0f172a"/>
+          </svg>
+        </div>
+        <p class="muted" id="qrHelp">
+          This is a placeholder. When connected to Airwallex, the backend should replace this with the real QR payload.
+        </p>
+      </article>
+    </section>
+
+    <section class="steps">
+      <article class="step panel">
+        <strong>1. Choose an amount</strong>
+        <p class="muted">Tap a preset amount or enter a custom donation.</p>
+      </article>
+      <article class="step panel">
+        <strong>2. Generate the QR</strong>
+        <p class="muted">Your backend sends that amount to Airwallex.</p>
+      </article>
+      <article class="step panel">
+        <strong>3. Scan and pay</strong>
+        <p class="muted">The supporter uses a bank app to complete the donation.</p>
+      </article>
+      <article class="step panel">
+        <strong>4. Show thanks</strong>
+        <p class="muted">After webhook confirmation, show a thank-you message.</p>
+      </article>
+    </section>
+
+    <section class="contact">
+      <article class="panel section">
+        <div class="card-head">
+          <h2>Contact & legal</h2>
+          <span class="pill">Visible on site</span>
+        </div>
+        <p class="muted">
+          This information is shown on the site for Airwallex onboarding and user trust.
+        </p>
+        <div class="details">
+          <div><span>Company</span><strong>WELLBEING INITIATIVE SINGAPORE LLP</strong></div>
+          <div><span>UEN</span><strong>T24LL1371F</strong></div>
+          <div><span>Email</span><strong>wellbeinginitiative2026@gmail.com</strong></div>
+          <div><span>Phone</span><strong>9115 4409</strong></div>
+          <div><span>Address</span><strong>353 Tampines Street 33, #05-510, Singapore 520353</strong></div>
+        </div>
+      </article>
+
+      <article class="panel section">
+        <div class="card-head">
+          <h2>Policies</h2>
+          <span class="pill">Publish-ready draft</span>
+        </div>
+        <div class="policy">
+          <details open>
+            <summary>Terms & Conditions</summary>
+            <p>Donations support the initiative's research, outreach, and community programs. PayNow payments are processed in SGD. Donations are voluntary and subject to the rules shown on this website.</p>
+          </details>
+          <details>
+            <summary>Refund policy</summary>
+            <p>As donations are voluntary contributions, refunds are handled case by case. Contact us by email if you need help with a specific transaction.</p>
+          </details>
+          <details>
+            <summary>Privacy policy</summary>
+            <p>We collect supporter contact information only when needed for donation processing, receipts, and follow-up. We do not sell personal data. Contact us if you want access, correction, or deletion of your information where applicable.</p>
+          </details>
+          <details>
+            <summary>Governing law</summary>
+            <p>Singapore law.</p>
+          </details>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel footer-note">
+      <strong>No external redirection</strong>
+      <p>The donation flow stays on this site. Do not send supporters to another website to complete payment.</p>
+    </section>
+  </main>
+
+  <script>
+    const amountGrid = document.getElementById('amountGrid');
+    const customAmount = document.getElementById('customAmount');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const donorName = document.getElementById('donorName');
+    const donorEmail = document.getElementById('donorEmail');
+    const qrHelp = document.getElementById('qrHelp');
+    const generateQr = document.getElementById('generateQr');
+
+    function formatAmount(value) {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) && numeric > 0 ? `SGD ${numeric.toFixed(2)}` : 'SGD 0.00';
+    }
+
+    function setActive(amount) {
+      amountGrid.querySelectorAll('.amount-chip').forEach((chip) => {
+        chip.classList.toggle('active', chip.dataset.amount === String(amount));
+      });
+    }
+
+    amountGrid.addEventListener('click', (event) => {
+      const chip = event.target.closest('.amount-chip');
+      if (!chip) return;
+      customAmount.value = chip.dataset.amount;
+      amountDisplay.textContent = formatAmount(chip.dataset.amount);
+      setActive(chip.dataset.amount);
+    });
+
+    customAmount.addEventListener('input', () => {
+      amountDisplay.textContent = formatAmount(customAmount.value);
+      setActive(customAmount.value);
+    });
+
+    generateQr.addEventListener('click', () => {
+      const name = donorName.value.trim() || 'supporter';
+      const email = donorEmail.value.trim() || 'their email';
+      const amount = formatAmount(customAmount.value);
+      qrHelp.textContent =
+        `This page is now prepared for ${name}. In the live version, your backend would ask Airwallex for a real PayNow QR for ${amount}, then show it here and send confirmation to ${email}.`;
+      generateQr.textContent = 'QR requested';
+      generateQr.disabled = true;
+      generateQr.style.opacity = '0.78';
+    });
+  </script>
+</body>
+</html>
