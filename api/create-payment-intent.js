@@ -178,8 +178,13 @@ module.exports = async function handler(request, response) {
       merchant_order_id: merchantOrderId
     });
   } catch (error) {
+    const rawMessage = error.message || 'Unable to create payment intent.';
+    const message = /unauthorized/i.test(rawMessage)
+      ? 'Payment setup needs attention. Please contact us or try again later.'
+      : rawMessage;
+
     sendJson(response, 500, {
-      message: error.message || 'Unable to create payment intent.'
+      message
     });
   }
 };
