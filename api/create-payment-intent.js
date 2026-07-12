@@ -77,7 +77,7 @@ function splitName(name) {
   };
 }
 
-async function airwallexRequest(path, options = {}) {
+async function airwallexRequest(path, options = {}, stage = 'airwallex_request') {
   const env = process.env.AIRWALLEX_ENV === 'demo' ? 'demo' : 'prod';
   const baseUrl = AIRWALLEX_BASE_URLS[env];
   const response = await fetch(`${baseUrl}${path}`, options);
@@ -86,7 +86,10 @@ async function airwallexRequest(path, options = {}) {
 
   if (!response.ok) {
     const message = payload.message || payload.error_description || 'Airwallex request failed.';
-    throw new Error(message);
+    const error = new Error(message);
+    error.stage = stage;
+    error.status = response.status;
+    throw error;
   }
 
   return { payload, env };
@@ -132,14 +135,18 @@ module.exports = async function handler(request, response) {
     const requestId = createRequestId();
     const merchantOrderId = `WIS-${Date.now()}`;
 
-    const { payload: loginPayload, env } = await airwallexRequest('/authentication/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-client-id': process.env.AIRWALLEX_CLIENT_ID,
-        'x-api-key': process.env.AIRWALLEX_API_KEY
-      }
-    });
+    const { payload: loginPayload, env } = await airwallexRequest(
+      '/authentication/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-client-id': process.env.AIRWALLEX_CLIENT_ID,
+          'x-api-key': process.env.AIRWALLEX_API_KEY
+        }
+      },
+      'airwallex_login'
+    );
 
     const customer = {
       email: String(body.email || '').trim() || undefined,
@@ -152,21 +159,31 @@ module.exports = async function handler(request, response) {
       }
     });
 
-    const { payload: paymentIntent } = await airwallexRequest('/pa/payment_intents/create', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${loginPayload.token}`,
-        'Content-Type': 'application/json'
+    if (!loginPayload.token) {
+      throw Object.assign(new Error('Airwallex authentication did not return a token.'), {
+        stage: 'airwallex_login'
+      });
+    }
+
+    const { payload: paymentIntent } = await airwallexRequest(
+      '/pa/payment_intents/create',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${loginPayload.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          request_id: requestId,
+          amount: Number(amount.toFixed(2)),
+          currency: 'SGD',
+          merchant_order_id: merchantOrderId,
+          return_url: `${siteUrl}/payment-success.html`,
+          ...(Object.keys(customer).length ? { customer } : {})
+        })
       },
-      body: JSON.stringify({
-        request_id: requestId,
-        amount: Number(amount.toFixed(2)),
-        currency: 'SGD',
-        merchant_order_id: merchantOrderId,
-        return_url: `${siteUrl}/payment-success.html`,
-        ...(Object.keys(customer).length ? { customer } : {})
-      })
-    });
+      'payment_intent_create'
+    );
 
     sendJson(response, 200, {
       env,
@@ -183,8 +200,15 @@ module.exports = async function handler(request, response) {
       ? 'Payment setup needs attention. Please contact us or try again later.'
       : rawMessage;
 
+    console.error('Payment setup error', {
+      stage: error.stage || 'unknown',
+      status: error.status || null,
+      message: rawMessage
+    });
+
     sendJson(response, 500, {
-      message
+      message,
+      code: error.stage || 'payment_setup_error'
     });
   }
 };
