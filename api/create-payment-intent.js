@@ -14,11 +14,19 @@ function getAllowedOrigin(request) {
   const allowedOrigins = new Set([
     siteUrl,
     'https://wellbeinginitiativesg.org',
+    'https://www.wellbeinginitiativesg.org',
+    'https://wellbeinginitiativesg.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173'
   ]);
   const origin = request.headers.origin;
-  return allowedOrigins.has(origin) ? origin : siteUrl;
+  if (!origin) {
+    return siteUrl;
+  }
+  if (allowedOrigins.has(origin) || origin.endsWith('.vercel.app')) {
+    return origin;
+  }
+  return siteUrl;
 }
 
 function parseBody(request) {
