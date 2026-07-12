@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Support Wellbeing Initiative Singapore</title>
   <meta name="description" content="Make a secure SGD contribution to Wellbeing Initiative Singapore LLP." />
-  <meta name="payment-api-base" content="" />
+  <meta name="payment-api-base" content="https://wellbeinginitiativesg.vercel.app" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -766,7 +766,15 @@
           })
         });
 
-        const payload = await response.json();
+        const responseText = await response.text();
+        let payload = {};
+
+        try {
+          payload = responseText ? JSON.parse(responseText) : {};
+        } catch (parseError) {
+          throw new Error('The secure payment service is not responding correctly. Please try again shortly or contact us.');
+        }
+
         if (!response.ok) {
           throw new Error(payload.message || 'Unable to start checkout.');
         }
