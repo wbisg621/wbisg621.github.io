@@ -293,25 +293,38 @@
       box-shadow: 0 0 0 4px rgba(100, 102, 233, 0.14);
     }
 
+    .field-hint {
+      margin: 10px 2px 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
     .summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
+      display: grid;
+      gap: 12px;
       margin-top: 16px;
       padding: 16px;
       border-radius: 20px;
       background: linear-gradient(135deg, var(--mint), #eef0ff);
     }
 
-    .summary span {
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .summary-row span {
       color: var(--muted);
       font-weight: 800;
     }
 
-    .summary strong {
+    .summary-row strong {
       color: var(--brand-dark);
-      font-size: 1.28rem;
+      font-size: 1rem;
+      text-align: right;
     }
 
     .pay-button {
@@ -583,6 +596,9 @@
         <p class="checkout-note">
           Choose any amount in Singapore dollars, then continue to a secure payment page to complete your contribution.
         </p>
+        <p class="checkout-note">
+          Please enter your name and email first so we can send your receipt and thank-you note after payment.
+        </p>
 
         <div class="amount-grid" id="amountGrid" aria-label="Contribution amount">
           <button class="amount-chip" type="button" data-amount="10">S$10</button>
@@ -598,20 +614,27 @@
 
         <label class="field">
           <span>Your name</span>
-          <input id="supporterName" name="name" type="text" placeholder="Optional" autocomplete="name" />
+          <input id="supporterName" name="name" type="text" placeholder="Full name" autocomplete="name" required />
         </label>
 
         <label class="field">
           <span>Email address</span>
-          <input id="supporterEmail" name="email" type="email" placeholder="For receipt or follow-up" autocomplete="email" />
+          <input id="supporterEmail" name="email" type="email" placeholder="For receipt or follow-up" autocomplete="email" required />
         </label>
+        <p class="field-hint">We use these details only for your payment confirmation and supporter follow-up.</p>
 
         <div class="summary">
-          <span>Total</span>
-          <strong id="amountDisplay">SGD 25.00</strong>
+          <div class="summary-row">
+            <span>Contribution amount</span>
+            <strong id="amountDisplay">SGD 25.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>Supporter details</span>
+            <strong id="summaryDetails">Name and email required</strong>
+          </div>
         </div>
 
-        <button class="pay-button" id="checkoutButton" type="submit">Continue to secure payment</button>
+        <button class="pay-button" id="checkoutButton" type="submit" disabled>Continue to secure payment</button>
         <p class="message" id="checkoutMessage" role="status" aria-live="polite"></p>
 
         <div class="methods" aria-label="Available payment methods">
@@ -704,7 +727,10 @@
     const checkoutMessage = document.getElementById('checkoutMessage');
     const supporterName = document.getElementById('supporterName');
     const supporterEmail = document.getElementById('supporterEmail');
+    const summaryDetails = document.getElementById('summaryDetails');
     const apiBase = document.querySelector('meta[name="payment-api-base"]').content.replace(/\/$/, '');
+    const pendingContributionKey = 'wisPendingContribution';
+    let isSubmitting = false;
 
     function parseAmount(value) {
       const amount = Number(value);
@@ -721,11 +747,37 @@
       amountGrid.querySelectorAll('.amount-chip').forEach((chip) => {
         chip.classList.toggle('active', Number(chip.dataset.amount) === amount);
       });
+      updateSummaryDetails();
+      updateSubmitState();
     }
 
     function setLoading(isLoading) {
-      checkoutButton.disabled = isLoading;
+      isSubmitting = isLoading;
+      updateSubmitState();
       checkoutButton.textContent = isLoading ? 'Opening secure checkout...' : 'Continue to secure payment';
+    }
+
+    function updateSummaryDetails() {
+      const name = supporterName.value.trim();
+      const email = supporterEmail.value.trim();
+      if (!name && !email) {
+        summaryDetails.textContent = 'Name and email required';
+        return;
+      }
+      if (name && email) {
+        summaryDetails.textContent = `${name} | ${email}`;
+        return;
+      }
+      summaryDetails.textContent = name || email;
+    }
+
+    function isFormReady() {
+      const amount = parseAmount(customAmount.value);
+      return amount >= 1 && supporterName.value.trim() && supporterEmail.value.trim();
+    }
+
+    function updateSubmitState() {
+      checkoutButton.disabled = isSubmitting || !isFormReady();
     }
 
     amountGrid.addEventListener('click', (event) => {
@@ -741,13 +793,37 @@
       updateAmount(customAmount.value);
     });
 
+    supporterName.addEventListener('input', () => {
+      checkoutMessage.textContent = '';
+      updateSummaryDetails();
+      updateSubmitState();
+    });
+
+    supporterEmail.addEventListener('input', () => {
+      checkoutMessage.textContent = '';
+      updateSummaryDetails();
+      updateSubmitState();
+    });
+
     checkoutForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const amount = parseAmount(customAmount.value);
+      const name = supporterName.value.trim();
+      const email = supporterEmail.value.trim();
 
       if (amount < 1) {
         checkoutMessage.textContent = 'Please enter an amount of at least SGD 1.00.';
         customAmount.focus();
+        return;
+      }
+
+      if (!name || !email) {
+        checkoutMessage.textContent = 'Please enter your name and email before continuing.';
+        if (!name) {
+          supporterName.focus();
+        } else {
+          supporterEmail.focus();
+        }
         return;
       }
 
@@ -779,6 +855,17 @@
           throw new Error(payload.message || 'Unable to start checkout.');
         }
 
+        sessionStorage.setItem(pendingContributionKey, JSON.stringify({
+          amount,
+          name,
+          email,
+          purpose: 'Support contribution to Wellbeing Initiative Singapore LLP',
+          intent_id: payload.intent_id,
+          merchant_order_id: payload.merchant_order_id,
+          currency: payload.currency || 'SGD',
+          saved_at: new Date().toISOString()
+        }));
+
         const { payments } = await window.AirwallexComponentsSDK.init({
           env: payload.env || 'prod',
           enabledElements: ['payments']
@@ -804,6 +891,8 @@
     });
 
     updateAmount(customAmount.value);
+    updateSummaryDetails();
+    updateSubmitState();
   </script>
 </body>
 </html>
