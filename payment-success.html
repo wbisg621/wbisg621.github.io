@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Received | Wellbeing Initiative Singapore</title>
+  <meta name="payment-api-base" content="https://wellbeinginitiativesg.vercel.app" />
   <style>
     :root {
       --ink: #17211f;
@@ -86,6 +87,17 @@
       background: var(--soft);
       color: var(--ink);
     }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--green);
+      font-family: Arial, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -96,10 +108,65 @@
       Your checkout has returned successfully. Thank you for helping Wellbeing Initiative Singapore
       continue its research-informed outreach and community work.
     </p>
+    <p class="status" id="emailStatus">Finalizing your receipt and thank-you email...</p>
     <div class="actions">
       <a class="primary" href="/index.html">Return home</a>
       <a class="secondary" href="/support.html">Make another contribution</a>
     </div>
   </main>
+  <script>
+    const apiBase = document.querySelector('meta[name="payment-api-base"]').content.replace(/\/$/, '');
+    const pendingContributionKey = 'wisPendingContribution';
+    const statusNode = document.getElementById('emailStatus');
+
+    function parseStoredContribution() {
+      try {
+        const raw = sessionStorage.getItem(pendingContributionKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    async function postJson(url, body) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const text = await response.text();
+      let payload = {};
+
+      try {
+        payload = text ? JSON.parse(text) : {};
+      } catch (error) {
+        throw new Error('The email service returned an unexpected response.');
+      }
+
+      if (!response.ok) {
+        throw new Error(payload.message || 'Unable to send email notifications.');
+      }
+
+      return payload;
+    }
+
+    (async () => {
+      const contribution = parseStoredContribution();
+
+      if (!contribution) {
+        statusNode.textContent = 'Your payment was completed. If you entered an email address, your confirmation will follow shortly.';
+        return;
+      }
+
+      try {
+        await postJson(`${apiBase}/api/send-support-thank-you`, contribution);
+        sessionStorage.removeItem(pendingContributionKey);
+        statusNode.textContent = 'Your payment was completed and your thank-you email has been sent.';
+      } catch (error) {
+        statusNode.textContent = error.message || 'Your payment was completed, but the email confirmation could not be sent automatically.';
+      }
+    })();
+  </script>
 </body>
 </html>
