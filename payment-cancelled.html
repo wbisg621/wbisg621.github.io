@@ -100,5 +100,12 @@
       <a class="secondary" href="/index.html">Return home</a>
     </div>
   </main>
+  <script>
+    try {
+      sessionStorage.removeItem('wisPendingContribution');
+    } catch (error) {
+      // Ignore storage issues on the cancelled page.
+    }
+  </script>
 </body>
 </html>
